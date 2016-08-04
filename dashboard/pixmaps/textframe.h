@@ -46,28 +46,11 @@ public:
     void addUnder(TextFrame *frame);
     void addAbove(TextFrame *frame);
 
+    //void addAbove(TextFrame *frame, int letterCount, int fontSize = fontSize);
 
-
-
-/*
-    void setOriginCenter(qreal y, qreal x, int letterCount, int fontSize = fontSize);
-    void setOriginTopLeft(qreal y, qreal x, int letterCount, int fontSize = fontSize);
-    void setOriginTopRight(qreal y, qreal x, int letterCount, int fontSize = fontSize);
-    void setOriginBotRight(qreal y, qreal x, int letterCount, int fontSize = fontSize);
-    void setOriginBotLeft(qreal y, qreal x, int letterCount, int fontSize = fontSize);
-
-    void setOriginTopLeft(QPointF corner, int letterCount, int fontSize = fontSize);
-    void setOriginTopRight(QPointF corner, int letterCount, int fontSize = fontSize);
-    void setOriginBotLeft(QPointF corner, int letterCount, int fontSize = fontSize);
-    void setOriginBotRight(QPointF corner, int letterCount, int fontSize = fontSize);
-
-    void addRightFrom(TextFrame *frame, int letterCount, int fontSize = fontSize);
-    void addLeftFrom(TextFrame *frame, int letterCount, int fontSize = fontSize);
-    void addUnder(TextFrame *frame, int letterCount, int fontSize = fontSize);
-    void addAbove(TextFrame *frame, int letterCount, int fontSize = fontSize);
-*/
     void drawText(QPixmap *target, QString text);
     void drawFrame(QPixmap *target);
+    void drawTime(QPixmap *target, float msTime, bool isDeltaTime = false);
 
 
 

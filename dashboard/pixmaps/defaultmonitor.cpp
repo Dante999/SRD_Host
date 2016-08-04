@@ -125,6 +125,12 @@ void DefaultMonitor::drawValues()
     {
         values[i].drawFrame(this);
     }
+
+
+
+    values[LAST_LAP].drawTime(this, 65.14552);
+    values[LAST_LAP].drawTime(this, -65.14552);
+
 }
 
 void DefaultMonitor::refresh()

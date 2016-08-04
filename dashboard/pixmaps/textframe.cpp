@@ -1,6 +1,6 @@
 #include "textframe.h"
 
-
+#include <QDebug>
 #include <QPainter>
 
 #define FONT_H  1.25
@@ -129,6 +129,42 @@ void TextFrame::drawFrame(QPixmap *target)
     QPainter p(target);
     p.setPen(Qt::white);
     p.drawRect(this->toRect());
+
+}
+
+void TextFrame::drawTime(QPixmap *target, float msTime, bool isDeltaTime)
+{
+
+    QString time;
+
+    if(msTime < 0)
+    {
+        msTime *= -1;
+        time = "-";
+    }
+    else
+    {
+        time = "+";
+    }
+
+    int min = msTime/60;
+    int sec = msTime - min*60;
+    int ttt = (msTime+0.0005)*1000;
+
+    ttt = ttt%1000;
+
+
+
+
+    time += QString("%1:%2.%3").arg(min, 2, 10, QChar('0')).arg(sec, 2, 10, QChar('0')).arg(ttt);
+
+    qDebug() << "ms:  " << msTime;
+    qDebug() << "time: " << time;
+
+
+
+
+
 
 }
 
