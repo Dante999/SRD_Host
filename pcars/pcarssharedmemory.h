@@ -1,12 +1,12 @@
+#ifndef PCARSSHAREDMEMORY_H
+#define PCARSSHAREDMEMORY_H
+
 /*************************************************************************************************
   Description:
     Storage structure for storing and updating shared memory
 
     Copyright (c) MWL. All rights reserved.
 *************************************************************************************************/
-
-#ifndef _SHARED_MEMORY_H_
-#define _SHARED_MEMORY_H_
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // NOTES:
@@ -387,7 +387,9 @@ typedef struct
   float mWindDirectionX;                           // [ UNITS = Normalised Vector X ]
   float mWindDirectionY;                           // [ UNITS = Normalised Vector Y ]
   float mCloudBrightness;                          // [ RANGE = 0.0f->... ]
-} SharedMemory;
+} MemoryMap_Pcars;
 
 
-#endif  // _SHARED_MEMORY_HP_
+
+
+#endif // PCARSSHAREDMEMORY_H
