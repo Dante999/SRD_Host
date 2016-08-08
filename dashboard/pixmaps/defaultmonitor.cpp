@@ -47,15 +47,10 @@ DefaultMonitor::DefaultMonitor() //: QPixmap(PIXMAP_WIDTH, PIXMAP_HEIGHT)
 void DefaultMonitor::calculateFrames()
 {
     // STATUS-FRAME
-
     values[STATUS_MSG].setTop(STATUS_TOP);
     values[STATUS_MSG].setBottom(STATUS_BOT);
     values[STATUS_MSG].setLeft(STATUS_LEFT);
     values[STATUS_MSG].setRight(STATUS_RIGHT);
-
-
-    //values[STATUS_MSG].setOriginTopLeft(STATUS_TOP, STATUS_LEFT);
-    //values[STATUS_MSG].setRight(STATUS_RIGHT);
 
     // GEAR-FRAME
     values[GEAR].setOriginCenter(PIXMAP_HEIGHT/2, PIXMAP_WIDTH/2);
@@ -120,9 +115,6 @@ void DefaultMonitor::drawLabels()
     labels[POSITION].drawText(this, "Pos");
     labels[DELTA_BEHIND].drawText(this, "tBehi");
     labels[DELTA_AHEAD].drawText(this, "tAhea");
-
-    values[GEAR].drawText(this, "1");
-
 }
 
 void DefaultMonitor::drawValues(clientDataStruct data)
@@ -149,7 +141,4 @@ void DefaultMonitor::drawValues(clientDataStruct data)
     values[DELTA_BEHIND].drawDelta(this, data.timeSplitBehind *(-1));
 }
 
-void DefaultMonitor::refresh()
-{
 
-}

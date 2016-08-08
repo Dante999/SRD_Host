@@ -108,24 +108,6 @@ void MainWindow::on_pushButton_connectGame_clicked()
 
 void MainWindow::on_pushButton_clientDemo_clicked()
 {
-
-
-    clientData.gear = 5;
-    clientData.tempOil = 110;
-    clientData.tempWater = 105;
-    clientData.timeBestLap = 106.12354454;
-    clientData.timeLastLap = 108.6544234;
-    clientData.timeCurrentSector1 = 30.123;
-    clientData.timeFastestSector1 = 28.459;
-    clientData.timeCurrentSector2 = 25.123;
-    clientData.timeFastestSector2 = 26.459;
-    clientData.timeCurrentSector3 = 18.123;
-    clientData.timeFastestSector3 = 19.459;
-    clientData.timeSplitAhead = +4.12666;
-    clientData.timeSplitBehind = -5.020208;
-
-
-
     dashboard = new Dashboard(&clientData);
 
     dashboard->resize(1024, 600);

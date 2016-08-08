@@ -10,14 +10,14 @@ class DashboardContent : public QPixmap
 
 private:
 
-
+    virtual void calculateFrames() = 0;
     virtual void drawLabels() = 0;
 
 
 public:
     DashboardContent();
     virtual void drawValues(clientDataStruct data) = 0;
-    virtual void refresh() = 0;
+
 
 };
 

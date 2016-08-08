@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     dashboard/pixmaps/textframe.cpp \
     dashboard/dashboard.cpp \
     dashboard/pixmaps/dashboardcontent.cpp \
-    dashboard/dashboardthread.cpp
+    dashboard/dashboardthread.cpp \
+    dashboard/pixmaps/damagemonitor.cpp
 
 HEADERS  += mainwindow.h \
     pcars/pcarsworker.h \
@@ -31,6 +32,7 @@ HEADERS  += mainwindow.h \
     dashboard/pixmaps/textframe.h \
     dashboard/dashboard.h \
     dashboard/pixmaps/dashboardcontent.h \
-    dashboard/dashboardthread.h
+    dashboard/dashboardthread.h \
+    dashboard/pixmaps/damagemonitor.h
 
 FORMS    += mainwindow.ui

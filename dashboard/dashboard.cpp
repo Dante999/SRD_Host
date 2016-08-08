@@ -2,13 +2,16 @@
 #include "QPainter"
 
 #include "pixmaps/defaultmonitor.h"
+#include "pixmaps/damagemonitor.h"
 
 
 
 Dashboard::Dashboard(clientDataStruct *gameData)
 {
     this->gameData = gameData;
-    content = new DefaultMonitor();
+
+    //content = new DefaultMonitor();
+    content = new DamageMonitor();
 }
 
 
