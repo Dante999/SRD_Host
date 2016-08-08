@@ -9,8 +9,9 @@
 
 
 
-DefaultMonitor::DefaultMonitor() : QPixmap(PIXMAP_WIDTH, PIXMAP_HEIGHT)
+DefaultMonitor::DefaultMonitor() //: QPixmap(PIXMAP_WIDTH, PIXMAP_HEIGHT)
 {
+
     this->fill(Qt::black);
 
     //labels = new TextFrame[DES_MAX];
@@ -35,7 +36,7 @@ DefaultMonitor::DefaultMonitor() : QPixmap(PIXMAP_WIDTH, PIXMAP_HEIGHT)
 
     calculateFrames();
     drawLabels();
-    drawValues();
+
 
 
 
@@ -46,27 +47,32 @@ DefaultMonitor::DefaultMonitor() : QPixmap(PIXMAP_WIDTH, PIXMAP_HEIGHT)
 void DefaultMonitor::calculateFrames()
 {
     // STATUS-FRAME
-    labels[STATUS_MSG].setTop(BORDER_SPACE);
-    labels[STATUS_MSG].setBottom(FONT_SIZE_STATUS+BORDER_SPACE);
-    labels[STATUS_MSG].setLeft(MIN_X);
-    labels[STATUS_MSG].setRight(MAX_X);
+
+    values[STATUS_MSG].setTop(STATUS_TOP);
+    values[STATUS_MSG].setBottom(STATUS_BOT);
+    values[STATUS_MSG].setLeft(STATUS_LEFT);
+    values[STATUS_MSG].setRight(STATUS_RIGHT);
+
+
+    //values[STATUS_MSG].setOriginTopLeft(STATUS_TOP, STATUS_LEFT);
+    //values[STATUS_MSG].setRight(STATUS_RIGHT);
 
     // GEAR-FRAME
     values[GEAR].setOriginCenter(PIXMAP_HEIGHT/2, PIXMAP_WIDTH/2);
 
     // TOP-LEFT
-    labels[TEMP_MOT].setOriginTopLeft(MIN_Y, MIN_X);
-    labels[TEMP_WAT].addUnder(&labels[TEMP_MOT]);
-    labels[PLACE1].addUnder(&labels[TEMP_WAT]);
+    labels[TEMP_OIL].setOriginTopLeft(MIN_Y, MIN_X);
+    labels[TEMP_WAT].addUnder(&labels[TEMP_OIL]);
+    labels[PLACEHOLDER1].addUnder(&labels[TEMP_WAT]);
 
-    values[TEMP_MOT].addRightFrom(&labels[TEMP_MOT]);
+    values[TEMP_OIL].addRightFrom(&labels[TEMP_OIL]);
     values[TEMP_WAT].addRightFrom(&labels[TEMP_WAT]);
-    values[PLACE1].addRightFrom(&labels[PLACE1]);
+    values[PLACEHOLDER1].addRightFrom(&labels[PLACEHOLDER1]);
 
     // BOTTOM-LEFT
-    labels[DELTA_AHEAD].setOriginBotLeft(MAX_Y, MIN_X);
-    labels[DELTA_BEHIND].addAbove(&labels[DELTA_AHEAD]);
-    labels[POSITION].addAbove(&labels[DELTA_BEHIND]);
+    labels[DELTA_BEHIND].setOriginBotLeft(MAX_Y, MIN_X);
+    labels[DELTA_AHEAD].addAbove(&labels[DELTA_BEHIND]);
+    labels[POSITION].addAbove(&labels[DELTA_AHEAD]);
 
     values[DELTA_AHEAD].addRightFrom(&labels[DELTA_AHEAD]);
     values[DELTA_BEHIND].addRightFrom(&labels[DELTA_BEHIND]);
@@ -107,30 +113,40 @@ void DefaultMonitor::drawLabels()
     labels[DELTA_S2].drawText(this, "S2");
     labels[DELTA_S3].drawText(this, "S3");
 
-    labels[TEMP_MOT].drawText(this, "TOil");
+    labels[TEMP_OIL].drawText(this, "TOil");
     labels[TEMP_WAT].drawText(this, "TWat");
-    labels[PLACE1].drawText(this, "-");
+    labels[PLACEHOLDER1].drawText(this, "-");
 
     labels[POSITION].drawText(this, "Pos");
-    labels[DELTA_BEHIND].drawText(this, "tAhe");
-    labels[DELTA_AHEAD].drawText(this, "tBeh");
+    labels[DELTA_BEHIND].drawText(this, "tBehi");
+    labels[DELTA_AHEAD].drawText(this, "tAhea");
 
     values[GEAR].drawText(this, "1");
 
 }
 
-void DefaultMonitor::drawValues()
+void DefaultMonitor::drawValues(clientDataStruct data)
 {
     for(size_t i = 0; i < sizeof(values)/sizeof(TextFrame); i++)
     {
+        values[i].clearArea(this);
         values[i].drawFrame(this);
+
     }
 
-
-
-    values[LAST_LAP].drawTime(this, 65.14552);
-    values[LAST_LAP].drawTime(this, -65.14552);
-
+    values[STATUS_MSG].drawText(this, "No Messages available!", Qt::red);
+    values[GEAR].drawText(this, QString::number(data.gear));
+    values[LAST_LAP].drawTime(this, data.timeLastLap);
+    values[BEST_LAP].drawTime(this, data.timeBestLap);
+    values[DELTA_LAP].drawDelta(this, (data.timeLastLap-data.timeBestLap));
+    values[DELTA_S1].drawDelta(this, (data.timeCurrentSector1-data.timeFastestSector1));
+    values[DELTA_S2].drawDelta(this, (data.timeCurrentSector2-data.timeFastestSector2));
+    values[DELTA_S3].drawDelta(this, (data.timeCurrentSector3-data.timeFastestSector3));
+    values[TEMP_OIL].drawTemperature(this, data.tempOil, 70, 120);
+    values[TEMP_WAT].drawTemperature(this, data.tempWater, 70, 120);
+    values[POSITION].drawText(this, QString::number(data.racePosition));
+    values[DELTA_AHEAD].drawDelta(this, data.timeSplitAhead);
+    values[DELTA_BEHIND].drawDelta(this, data.timeSplitBehind *(-1));
 }
 
 void DefaultMonitor::refresh()

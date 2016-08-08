@@ -39,24 +39,17 @@ public:
     void setOriginBotRight(qreal y, qreal x);
     void setOriginBotLeft(qreal y, qreal x);
 
-
-
     void addRightFrom(TextFrame *frame);
     void addLeftFrom(TextFrame *frame);
     void addUnder(TextFrame *frame);
     void addAbove(TextFrame *frame);
 
-    //void addAbove(TextFrame *frame, int letterCount, int fontSize = fontSize);
-
-    void drawText(QPixmap *target, QString text);
+    void drawText(QPixmap *target, QString text, QColor color = Qt::white);
     void drawFrame(QPixmap *target);
     void drawTime(QPixmap *target, float msTime, bool isDeltaTime = false);
-
-
-
-
-
-
+    void drawDelta(QPixmap *target, float msTime);
+    void drawTemperature(QPixmap *target, int temp, int limitLow, int limitHigh);
+    void clearArea(QPixmap *target);
 };
 
 #endif // TEXTFRAME_H

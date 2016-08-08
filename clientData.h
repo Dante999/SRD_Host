@@ -2,7 +2,7 @@
 #define CLIENT_DATA_H
 
 
-#include <cstdint>
+#include <stdint.h>
 
 
 
@@ -43,7 +43,7 @@ enum
   eCAR_HANDBRAKE         = (1<<5),
 };
 
-typedef struct dataPackage
+typedef struct
 {
     int8_t gear;                            // [ UNITS = NONE ]     [ RANGE = -128 -> +127 ]
     int8_t maxGear;                         // [ UNITS = NONE ]     [ RANGE = -128 -> +127 ]
@@ -67,7 +67,7 @@ typedef struct dataPackage
     uint8_t raceFlagColour;                 // See (Type#5) Flag Colours
     uint8_t carFlags;                       // See (Type#9) Car Flags
 
-    uint8_t racePlacement;
+    uint8_t racePosition;
 
 
     float timeBestLap;
@@ -78,9 +78,10 @@ typedef struct dataPackage
     float timeFastestSector1;
     float timeFastestSector2;
     float timeFastestSector3;
+    float timeSplitAhead;
+    float timeSplitBehind;
 
-
-} struct_client;
+} clientDataStruct;
 
 
 

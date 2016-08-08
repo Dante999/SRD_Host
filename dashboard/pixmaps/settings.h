@@ -5,6 +5,8 @@
 #define PIXMAP_WIDTH   1024
 #define PIXMAP_HEIGHT  600
 
+
+
 #define FONT    "Consolas"
 
 // Letters per Text-Label
@@ -13,19 +15,28 @@
 
 // Label-Text size in points
 #define FONT_SIZE_TEXT      30
-#define FONT_SIZE_STATUS    100
+#define FONT_SIZE_STATUS    50
 #define FONT_SIZE_GEAR      200
 
 // Border-space
 #define BORDER_SPACE        10
 
-
-
-//#define MIN_Y   STATUS_PT_SIZE+(2*BORDER_SPACE)
-#define MIN_Y   FONT_SIZE_STATUS+50
+#define MIN_Y   FONT_SIZE_STATUS+BORDER_SPACE+50
 #define MAX_Y   PIXMAP_HEIGHT-20
 #define MIN_X   BORDER_SPACE
 #define MAX_X   PIXMAP_WIDTH-BORDER_SPACE
+
+
+// Position Status-Box
+#define STATUS_TOP      BORDER_SPACE
+#define STATUS_BOT      (FONT_SIZE_STATUS*1.5)+BORDER_SPACE
+#define STATUS_LEFT     MIN_X
+#define STATUS_RIGHT    MAX_X
+
+
+
+
+
 
 
 #endif // SETTINGS_H

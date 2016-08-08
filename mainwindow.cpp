@@ -10,6 +10,7 @@
 
 
 
+
 #define CONNECT     "Verbinden"
 #define DISCONNECT  "Trennen"
 
@@ -63,18 +64,18 @@ void MainWindow::on_pushButton_connectGame_clicked()
             // start thread
             qDebug() << "starting thread";
 
-            workerThread = new QThread;
+            gameThread = new QThread;
 
-            pworker = new PcarsWorker(workerThread, &clientData);
+            pworker = new PcarsWorker(gameThread, &clientData);
 
-            pworker->moveToThread(workerThread);
+            pworker->moveToThread(gameThread);
 
-            connect(workerThread, SIGNAL (started()), pworker, SLOT (process()));
-            connect(pworker, SIGNAL (finished()), workerThread, SLOT (quit()));
+            connect(gameThread, SIGNAL (started()), pworker, SLOT (process()));
+            connect(pworker, SIGNAL (finished()), gameThread, SLOT (quit()));
             connect(pworker, SIGNAL (finished()), pworker, SLOT (deleteLater()));
-            connect(workerThread, SIGNAL (finished()), workerThread, SLOT (deleteLater()));
+            connect(gameThread, SIGNAL (finished()), gameThread, SLOT (deleteLater()));
 
-            workerThread->start();
+            gameThread->start();
 
 
 
@@ -107,8 +108,60 @@ void MainWindow::on_pushButton_connectGame_clicked()
 
 void MainWindow::on_pushButton_clientDemo_clicked()
 {
-    Dashboard *dashboard = new Dashboard();
+
+
+    clientData.gear = 5;
+    clientData.tempOil = 110;
+    clientData.tempWater = 105;
+    clientData.timeBestLap = 106.12354454;
+    clientData.timeLastLap = 108.6544234;
+    clientData.timeCurrentSector1 = 30.123;
+    clientData.timeFastestSector1 = 28.459;
+    clientData.timeCurrentSector2 = 25.123;
+    clientData.timeFastestSector2 = 26.459;
+    clientData.timeCurrentSector3 = 18.123;
+    clientData.timeFastestSector3 = 19.459;
+    clientData.timeSplitAhead = +4.12666;
+    clientData.timeSplitBehind = -5.020208;
+
+
+
+    dashboard = new Dashboard(&clientData);
 
     dashboard->resize(1024, 600);
     dashboard->show();
+
+    dashboardThread = new DashboardThread(dashboard);
+
+    connect(dashboard, SIGNAL(destroyed(QObject*)), this, SLOT(dashboardDemoClosed()));
+
+
+    dashboardThread->start();
+/*
+    dashboardThread = new QThread;
+
+    dworker = new DashboardWorker(dashboardThread, dashboard);
+
+    dworker->moveToThread(dashboardThread);
+
+    connect(dashboardThread, SIGNAL (started()), dworker, SLOT (process()));
+    connect(dworker, SIGNAL (finished()), dashboardThread, SLOT (quit()));
+    connect(dworker, SIGNAL (finished()), dworker, SLOT (deleteLater()));
+    connect(dashboardThread, SIGNAL (finished()), dashboardThread, SLOT (deleteLater()));
+
+    //dashboardThread->start();
+
+
+*/
+
+
+
+}
+
+void MainWindow::dashboardDemoClosed()
+{
+    dashboardThread->stopLoop();
+
+    delete dashboard;
+    delete dashboardThread;
 }

@@ -5,19 +5,25 @@
 
 
 
-Dashboard::Dashboard()
+Dashboard::Dashboard(clientDataStruct *gameData)
 {
-    pixmap = new DefaultMonitor();
+    this->gameData = gameData;
+    content = new DefaultMonitor();
 }
+
 
 void Dashboard::paintEvent(QPaintEvent *)
 {
+    content->drawValues(*gameData);
+
     QPainter painter(this);
 
-    QPixmap test = pixmap->scaled(this->width(), this->height(), Qt::KeepAspectRatio ,Qt::SmoothTransformation);
+    QPixmap scaledPixmap = content->scaled(this->width(),
+                                           this->height(),
+                                           Qt::KeepAspectRatio,
+                                           Qt::SmoothTransformation);
 
-    //painter.drawPixmap(0, 0, this->width(), this->height(), *pixmap);
-    painter.drawPixmap(0, 0, this->width(), this->height(), test);
+    painter.drawPixmap(0, 0, this->width(), this->height(), scaledPixmap);
 
 }
 

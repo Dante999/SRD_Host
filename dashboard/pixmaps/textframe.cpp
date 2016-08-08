@@ -3,7 +3,8 @@
 #include <QDebug>
 #include <QPainter>
 
-#define FONT_H  1.25
+//#define FONT_H  1.25
+#define FONT_H  1.5
 #define FONT_W  0.75
 
 
@@ -104,11 +105,11 @@ void TextFrame::addAbove(TextFrame *frame)
     this->setTop(this->bottom() - letterHeight);
 }
 
-void TextFrame::drawText(QPixmap *target, QString text)
+void TextFrame::drawText(QPixmap *target, QString text, QColor color)
 {
     QPainter p(target);
 
-    p.setPen(Qt::white);
+    p.setPen(color);
     p.setFont(font);
 
 
@@ -135,36 +136,112 @@ void TextFrame::drawFrame(QPixmap *target)
 void TextFrame::drawTime(QPixmap *target, float msTime, bool isDeltaTime)
 {
 
+
+    QPainter p(target);
+    p.setPen(Qt::white);
+    p.setFont(font);
+
+
     QString time;
 
     if(msTime < 0)
     {
-        msTime *= -1;
-        time = "-";
+        msTime = msTime * (-1);
+
+        if(isDeltaTime)
+        {
+            time = "-";
+            p.setPen(Qt::green);
+        }
     }
     else
     {
-        time = "+";
+
+        if(isDeltaTime)
+        {
+            time = "+";
+            p.setPen(Qt::red);
+        }
     }
 
     int min = msTime/60;
     int sec = msTime - min*60;
-    int ttt = (msTime+0.0005)*1000;
+    //int ttt = (msTime+0.0005)*1000;
+    int ttt = msTime*1000;
 
     ttt = ttt%1000;
 
 
 
 
-    time += QString("%1:%2.%3").arg(min, 2, 10, QChar('0')).arg(sec, 2, 10, QChar('0')).arg(ttt);
+    time += QString("%1:%2.%3") .arg(min, 2, 10, QChar('0'))
+                                .arg(sec, 2, 10, QChar('0'))
+                                .arg(ttt, 3, 10, QChar('0'));
 
-    qDebug() << "ms:  " << msTime;
-    qDebug() << "time: " << time;
-
+    p.drawText(this->toRect(), Qt::AlignRight|Qt::AlignVCenter, time);
 
 
 
 
 
 }
+
+void TextFrame::drawDelta(QPixmap *target, float msTime)
+{
+    QString deltaTime = "";
+    QPainter p(target);
+
+    p.setPen(Qt::white);
+    p.setFont(font);
+
+    if(msTime < 0)
+    {
+        msTime = msTime * (-1);
+        deltaTime = "-";
+        p.setPen(Qt::green);
+    }
+    else
+    {
+        deltaTime = "+";
+        p.setPen(Qt::red);
+    }
+
+    int sec = msTime;
+
+    int ttt = (msTime+0.0005)*1000;
+    ttt = ttt%1000;
+
+    deltaTime += QString("%1.%2")    .arg(sec, 2, 10, QChar('0'))
+                                .arg(ttt, 3, 10, QChar('0'));
+
+    p.drawText(this->toRect(), Qt::AlignRight|Qt::AlignVCenter, deltaTime);
+
+
+
+}
+
+void TextFrame::drawTemperature(QPixmap *target, int temp, int limitLow, int limitHigh)
+{
+    QPainter p(target);
+    p.setPen(Qt::green);
+    p.setFont(font);
+
+    if      ( temp < limitLow)  p.setPen(Qt::blue);
+    else if ( temp > limitHigh) p.setPen(Qt::red);
+
+    QString temperature;
+
+    temperature = QString::number(temp);
+    temperature += " °C";
+
+    p.drawText(this->toRect(), Qt::AlignRight|Qt::AlignVCenter, temperature);
+}
+
+void TextFrame::clearArea(QPixmap *target)
+{
+    QPainter p(target);
+
+    p.fillRect(this->toRect(), Qt::black);
+}
+
 

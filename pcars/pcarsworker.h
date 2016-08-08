@@ -18,12 +18,12 @@ private:
 
     QSharedMemory *sharedMemory;
 
-    struct_client *clientData;
+    clientDataStruct *clientData;
     MemoryMap_Pcars *pcarsData;
 
     void convert();
 public:
-    PcarsWorker(QThread *parentThread, struct_client *clientData);
+    PcarsWorker(QThread *parentThread, clientDataStruct *data);
     void exitLoop();
     static bool isGameRunning();
 

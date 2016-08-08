@@ -2,10 +2,8 @@
 #define DEFAULTMONITOR_H
 
 #include <QPixmap>
-#include "interfacemonitor.h"
+#include "dashboardcontent.h"
 #include "textframe.h"
-
-
 
 
 
@@ -19,9 +17,9 @@ enum
     DELTA_S1,
     DELTA_S2,
     DELTA_S3,
-    TEMP_MOT,
+    TEMP_OIL,
     TEMP_WAT,
-    PLACE1,
+    PLACEHOLDER1,
     POSITION,
     DELTA_BEHIND,
     DELTA_AHEAD,
@@ -32,12 +30,11 @@ enum
 };
 
 
-
-
-
-
-class DefaultMonitor : public QPixmap, public InterfaceMonitor
+class DefaultMonitor : public DashboardContent
 {
+
+    friend class DashboardContent;
+
 
 private:
 
@@ -47,7 +44,7 @@ private:
 
     void calculateFrames();
     void drawLabels();
-    void drawValues();
+    void drawValues(clientDataStruct data);
     void refresh();
 
 

@@ -18,16 +18,19 @@ SOURCES += main.cpp\
     pcars/pcarsworker.cpp \
     dashboard/pixmaps/defaultmonitor.cpp \
     dashboard/pixmaps/textframe.cpp \
-    dashboard/dashboard.cpp
+    dashboard/dashboard.cpp \
+    dashboard/pixmaps/dashboardcontent.cpp \
+    dashboard/dashboardthread.cpp
 
 HEADERS  += mainwindow.h \
     pcars/pcarsworker.h \
     pcars/pcarssharedmemory.h \
     clientData.h \
     dashboard/pixmaps/defaultmonitor.h \
-    dashboard/pixmaps/interfacemonitor.h \
     dashboard/pixmaps/settings.h \
     dashboard/pixmaps/textframe.h \
-    dashboard/dashboard.h
+    dashboard/dashboard.h \
+    dashboard/pixmaps/dashboardcontent.h \
+    dashboard/dashboardthread.h
 
 FORMS    += mainwindow.ui

@@ -5,6 +5,8 @@
 #include <QThread>
 #include "pcars/pcarsworker.h"
 #include "clientData.h"
+#include "dashboard/dashboard.h"
+#include "dashboard/dashboardthread.h"
 
 
 namespace Ui {
@@ -20,10 +22,16 @@ private:
     void refreshComPortList();
 
 
-    QThread *workerThread;
+    QThread *gameThread;
+    DashboardThread *dashboardThread;
+
+    Dashboard *dashboard;
+
     PcarsWorker *pworker;
 
-    struct_client clientData;
+
+
+    clientDataStruct clientData;
 
 
 public:
@@ -34,10 +42,9 @@ public:
 
 private slots:
 
-
     void on_pushButton_connectGame_clicked();
-
     void on_pushButton_clientDemo_clicked();
+    void dashboardDemoClosed();
 
 private:
     Ui::MainWindow *ui;

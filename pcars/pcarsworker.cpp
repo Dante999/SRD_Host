@@ -5,10 +5,10 @@
 
 #define MEMORY_KEY "$pcars$"
 
-PcarsWorker::PcarsWorker(QThread *parentThread, struct_client *clientData)
+PcarsWorker::PcarsWorker(QThread *parentThread, clientDataStruct *data)
 {
     this->parentThread = parentThread;
-    this->clientData = clientData;
+    this->clientData = data;
     loop = true;
 
 
@@ -65,6 +65,10 @@ void PcarsWorker::process()
 
 void PcarsWorker::convert()
 {
+    ParticipantInfo *racerInfo = pcarsData->mParticipantInfo;
+
+    clientData->racePosition = racerInfo->mRacePosition;
+
     clientData->gear = (uint8_t) pcarsData->mGear;
     clientData->rpm = pcarsData->mRpm;
     clientData->maxRpm = pcarsData->mMaxRPM;
@@ -106,5 +110,7 @@ void PcarsWorker::convert()
     clientData->timeFastestSector1 = pcarsData->mFastestSector1Time;
     clientData->timeFastestSector2 = pcarsData->mFastestSector2Time;
     clientData->timeFastestSector3 = pcarsData->mFastestSector3Time;
+    clientData->timeSplitAhead = pcarsData->mSplitTimeAhead;
+    clientData->timeSplitBehind = pcarsData->mSplitTimeBehind;
 
 }

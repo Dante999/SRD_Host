@@ -31,12 +31,13 @@ class Dashboard : public QWidget
 
 
 private:
-    QPixmap *pixmap;
+    DashboardContent *content;
+    clientDataStruct *gameData;
 
 
 
 public:
-    Dashboard();
+    Dashboard(clientDataStruct *gameData);
 
     void paintEvent(QPaintEvent *);
 
