@@ -4,7 +4,7 @@
 #include <QImage>
 #include <QPainterPath>
 #include "dashboardcontent.h"
-
+#include "carshape.h"
 
 namespace DMG
 {
@@ -41,8 +41,8 @@ class DamageMonitor : public DashboardContent
 private:
 
 
-    QPainterPath frames[DMG::DMG_MAX];
-    QImage *carshape;
+
+    CarShape *carshape;
 
     void calculateFrames();
     void drawLabels();
