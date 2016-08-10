@@ -5,20 +5,9 @@
 
 #include "pixmaps/defaultmonitor.h"
 
-enum {
-    tLast = 0,
-    tBest,
-    tDelta,
-    tDeltaS1,
-    tDeltaS2,
-    tDeltaS3,
-    tempMotor,
-    tempWater,
-    deltaBehind,
-    deltaBefore,
-    //-------
 
-};
+
+
 
 
 
@@ -31,17 +20,22 @@ class Dashboard : public QWidget
 
 
 private:
+
+    enum monitor{FIRST, DEFAULT, DAMAGE, /**/ LAST} curMonitor;
     DashboardContent *content;
     clientDataStruct *gameData;
+
+    void selectMonitor();
 
 
 
 public:
+
     Dashboard(clientDataStruct *gameData);
-
     void paintEvent(QPaintEvent *);
+    void keyPressEvent(QKeyEvent* e);
 
-    void drawRect();
+
 };
 
 #endif // DASHBOARD_H

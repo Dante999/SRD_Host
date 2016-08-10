@@ -42,10 +42,12 @@ private:
 
 
 
-    CarShape *carshape;
+    CarShape carshape;
 
     void calculateFrames();
+    void refreshCarshape();
     void drawLabels();
+
 
 
 
