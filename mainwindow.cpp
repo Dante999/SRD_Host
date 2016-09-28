@@ -5,14 +5,17 @@
 #include <QList>
 #include <QDebug>
 
-#include "pcars/pcarsworker.h"
-#include "dashboard/dashboard.h"
+#include "pcars/pcarsThread.h"
+#include "serialcom/serialthread.h"
+
 
 
 
 
 #define CONNECT     "Verbinden"
 #define DISCONNECT  "Trennen"
+#define CONNECTED   "Verbunden"
+#define DISCONNECTED "Getrennt"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -21,8 +24,22 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->pushButton_connectGame->setText(CONNECT);
 
+
+    connectedGame = false;
+    connectedClient = false;
+
+
+
+
+    ui->pushButton_connectGame->setText(CONNECT);
+    ui->pushButton_connectClient->setText(CONNECT);
+
+    ui->label_connectStatus->setText(DISCONNECTED);
+    ui->label_gameStatus->setText(DISCONNECTED);
+
+
+    //comPort = Q_NULLPTR;
 
     refreshComPortList();
 }
@@ -34,18 +51,27 @@ MainWindow::~MainWindow()
 
 
 
-
+/**
+ * @brief Searching for available ComPorts
+ */
 void MainWindow::refreshComPortList()
 {
-    ui->comboBox_ComPorList->clear();
+    QString portnames = "";
 
-    QList<QSerialPortInfo> comPortList = QSerialPortInfo::availablePorts();
+    qDebug() << "Looking for available ComPorts...";
+
+    ui->comboBox_ComPorList->clear();                                           // delete all old ComPorts in the list
+
+    QList<QSerialPortInfo> comPortList = QSerialPortInfo::availablePorts();     // get a list with all available ones
 
 
-    for(int i=0; i < comPortList.count(); i++)
+    for(int i=0; i < comPortList.count(); i++)                                  // add every ComPort to the comboBox
     {
+        portnames += comPortList.at(i).portName() + " | ";
         ui->comboBox_ComPorList->addItem(comPortList.at(i).portName());
     }
+
+    qDebug() << "Found: " << portnames;
 
 }
 
@@ -53,97 +79,103 @@ void MainWindow::refreshComPortList()
 
 void MainWindow::on_pushButton_connectGame_clicked()
 {
+    qDebug() << "------ connectGame clicked -----";
 
-    if(ui->pushButton_connectGame->text() == CONNECT)
+
+    if(connectedGame == false)
     {
-        if(PcarsWorker::isGameRunning() == true)
+        qDebug() << "currently not connected with game";
+        ui->pushButton_connectGame->setText(CONNECT);
+        ui->label_gameStatus->setText(DISCONNECT);
+
+        if(PcarsThread::isGameRunning() == true)
         {
-            ui->label_gameStatus->setText("Verbunden");
+            qDebug() << "Game is running";
             ui->pushButton_connectGame->setText(DISCONNECT);
+            ui->label_gameStatus->setText(CONNECTED);
 
-            // start thread
-            qDebug() << "starting thread";
-
-            gameThread = new QThread;
-
-            pworker = new PcarsWorker(gameThread, &clientData);
-
-            pworker->moveToThread(gameThread);
-
-            connect(gameThread, SIGNAL (started()), pworker, SLOT (process()));
-            connect(pworker, SIGNAL (finished()), gameThread, SLOT (quit()));
-            connect(pworker, SIGNAL (finished()), pworker, SLOT (deleteLater()));
-            connect(gameThread, SIGNAL (finished()), gameThread, SLOT (deleteLater()));
-
+            qDebug() << "starting gameThread";
+            gameThread = new PcarsThread(&gameData);
             gameThread->start();
-
-
-
-
-
+            connectedGame = true;
         }
         else
         {
-            ui->label_gameStatus->setText("Fehler");
+            qDebug() << "Game is not running";
             ui->pushButton_connectGame->setText(CONNECT);
+            ui->label_gameStatus->setText("Pcars nicht aktiv!");
         }
     }
-
-    else if(ui->pushButton_connectGame->text() == DISCONNECT)
+    else
     {
-        ui->label_gameStatus->setText("Getrennt");
+        qDebug() << "currently connected with game";
         ui->pushButton_connectGame->setText(CONNECT);
+        ui->label_gameStatus->setText(DISCONNECTED);
+
+        qDebug() << "exiting gameThread";
+        gameThread->stopLoop();
+
+        while(gameThread->isRunning() == true)
+        {
+            // Wait for the Thread to end
+        }
+
+        delete gameThread;
+        connectedGame = false;
+    }
+}
 
 
-        qDebug() << "exiting thread";
 
-        pworker->exitLoop();
-        //delete readerThread;
+
+
+void MainWindow::on_pushButton_connectClient_clicked()
+{
+    QString portName = ui->comboBox_ComPorList->currentText();
+
+    qDebug() << "------ connectClient clicked -----";
+
+    if(connectedClient == false)
+    {
+        qDebug() << "currently not connected with client";
+
+        qDebug() << "creating serialThread";
+        comThread = new SerialThread(portName);
+        comThread->start();
+
+        ui->pushButton_connectClient->setText(DISCONNECT);
+        ui->label_connectStatus->setText(CONNECTED);
+
+        connectedClient = true;
+    }
+    else
+    {
+        comThread->stopLoop();
+
+        while(comThread->isRunning() == true)
+        {
+            // Wait for the Thread to end
+        }
+
+        qDebug() << "deleting serialThread";
+        delete comThread;
+
+
+
+        connectedClient = false;
+        ui->pushButton_connectClient->setText(CONNECT);
+        ui->label_connectStatus->setText(DISCONNECTED);
 
     }
 
-    else ui->pushButton_connectGame->setText(CONNECT);
-
-}
-
-void MainWindow::on_pushButton_clientDemo_clicked()
-{
-    dashboard = new Dashboard(&clientData);
-
-    dashboard->resize(1024, 600);
-    dashboard->show();
-
-    dashboardThread = new DashboardThread(dashboard);
-
-    connect(dashboard, SIGNAL(destroyed(QObject*)), this, SLOT(dashboardDemoClosed()));
-
-
-    dashboardThread->start();
-/*
-    dashboardThread = new QThread;
-
-    dworker = new DashboardWorker(dashboardThread, dashboard);
-
-    dworker->moveToThread(dashboardThread);
-
-    connect(dashboardThread, SIGNAL (started()), dworker, SLOT (process()));
-    connect(dworker, SIGNAL (finished()), dashboardThread, SLOT (quit()));
-    connect(dworker, SIGNAL (finished()), dworker, SLOT (deleteLater()));
-    connect(dashboardThread, SIGNAL (finished()), dashboardThread, SLOT (deleteLater()));
-
-    //dashboardThread->start();
-
-
-*/
 
 
 
-}
 
-void MainWindow::dashboardDemoClosed()
-{
-    dashboardThread->stopLoop();
+    //comThread = new SerialThread(comPort);
+    //comThread->start();
 
-    delete dashboard;
-    delete dashboardThread;
+
+
+
 }

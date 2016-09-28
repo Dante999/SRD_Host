@@ -3,10 +3,9 @@
 
 #include <QMainWindow>
 #include <QThread>
-#include "pcars/pcarsworker.h"
-#include "clientData.h"
-#include "dashboard/dashboard.h"
-#include "dashboard/dashboardthread.h"
+#include "pcars/pcarsThread.h"
+#include "gameData.h"
+#include "serialcom/serialcom.h"
 
 
 namespace Ui {
@@ -21,17 +20,16 @@ class MainWindow : public QMainWindow
 private:
     void refreshComPortList();
 
-
-    QThread *gameThread;
-    DashboardThread *dashboardThread;
-
-    Dashboard *dashboard;
-
-    PcarsWorker *pworker;
+    bool connectedGame;
+    bool connectedClient;
 
 
+    loopThread *gameThread;
+    loopThread *comThread;
 
-    clientDataStruct clientData;
+
+    gameDataStruct gameData;
+    //SerialCom *comPort;
 
 
 public:
@@ -42,9 +40,10 @@ public:
 
 private slots:
 
-    void on_pushButton_connectGame_clicked();
-    void on_pushButton_clientDemo_clicked();
-    void dashboardDemoClosed();
+    void on_pushButton_connectGame_clicked();    
+
+
+    void on_pushButton_connectClient_clicked();
 
 private:
     Ui::MainWindow *ui;

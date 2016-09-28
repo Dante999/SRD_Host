@@ -14,27 +14,22 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    pcars/pcarsworker.cpp \
-    dashboard/pixmaps/defaultmonitor.cpp \
-    dashboard/pixmaps/textframe.cpp \
-    dashboard/dashboard.cpp \
-    dashboard/pixmaps/dashboardcontent.cpp \
-    dashboard/dashboardthread.cpp \
-    dashboard/pixmaps/damagemonitor.cpp \
-    dashboard/pixmaps/carshape.cpp
+        mainwindow.cpp \    
+        pcars/pcarsThread.cpp \
+    serialcom/serialcom.cpp \
+    loopthread.cpp \
+    serialcom/serialthread.cpp
 
 HEADERS  += mainwindow.h \
-    pcars/pcarsworker.h \
-    pcars/pcarssharedmemory.h \
-    clientData.h \
-    dashboard/pixmaps/defaultmonitor.h \
-    dashboard/pixmaps/settings.h \
-    dashboard/pixmaps/textframe.h \
-    dashboard/dashboard.h \
-    dashboard/pixmaps/dashboardcontent.h \
-    dashboard/dashboardthread.h \
-    dashboard/pixmaps/damagemonitor.h \
-    dashboard/pixmaps/carshape.h
+    pcars/pcarssharedmemory.h \    
+    pcars/pcarsThread.h \
+    gameData.h \
+    serialcom/serialcom.h \
+    loopthread.h \
+    serialcom/serialthread.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES += \
+    .gitattributes \
+    .gitignore
