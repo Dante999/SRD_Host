@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connectedGame = false;
     connectedClient = false;
+    msSendIntervall = 500;
 
 
 
@@ -47,6 +48,12 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::sendGameData()
+{
+    serialCom->writeCommand(CMD_REQUEST);
+    serialCom->writeData(CMD_GAMEDATA, sizeof(gameData), (char*)&gameData);
 }
 
 
@@ -72,7 +79,6 @@ void MainWindow::refreshComPortList()
     }
 
     qDebug() << "Found: " << portnames;
-
 }
 
 
@@ -135,13 +141,20 @@ void MainWindow::on_pushButton_connectClient_clicked()
 
     qDebug() << "------ connectClient clicked -----";
 
+
     if(connectedClient == false)
     {
         qDebug() << "currently not connected with client";
 
-        qDebug() << "creating serialThread";
-        comThread = new SerialThread(portName);
-        comThread->start();
+        serialCom = new SerialCom(portName);
+        serialCom->open();
+
+        timerSerialLoop = new QTimer();
+
+        connect(timerSerialLoop, SIGNAL(timeout()), this, SLOT(sendGameData()));
+
+        timerSerialLoop->start(msSendIntervall);
+
 
         ui->pushButton_connectClient->setText(DISCONNECT);
         ui->label_connectStatus->setText(CONNECTED);
@@ -150,32 +163,16 @@ void MainWindow::on_pushButton_connectClient_clicked()
     }
     else
     {
-        comThread->stopLoop();
 
-        while(comThread->isRunning() == true)
-        {
-            // Wait for the Thread to end
-        }
+        timerSerialLoop->stop();
+        delete timerSerialLoop;
 
-        qDebug() << "deleting serialThread";
-        delete comThread;
-
-
+        serialCom->close();
+        delete serialCom;
 
         connectedClient = false;
         ui->pushButton_connectClient->setText(CONNECT);
         ui->label_connectStatus->setText(DISCONNECTED);
-
     }
-
-
-
-
-
-    //comThread = new SerialThread(comPort);
-    //comThread->start();
-
-
-
 
 }

@@ -3,66 +3,60 @@
 
 
 
+#define HEADER "serialPort - "
 
 
-
-
-
-SerialCom::SerialCom(QString portName, QObject *parent, qint32 baudRate)
+SerialCom::SerialCom(QString portName, qint32 baudRate)
 {
-    qDebug() << "creating serialport: " << portName;
-    qDebug() << "baudrate: " << baudRate;
+    qDebug() << HEADER << "creating: " << portName;
+    qDebug() << HEADER << "baudrate: " << baudRate;
 
-    //sPort = new QSerialPort(portName, this);
-    sPort.setParent(parent);
-    sPort.setPortName(portName);
-    sPort.setBaudRate(baudRate);
-    sPort.setDataBits(QSerialPort::Data8);
-    sPort.setParity(QSerialPort::NoParity);
-    sPort.setStopBits(QSerialPort::OneStop);
-    sPort.setFlowControl(QSerialPort::NoFlowControl);
+    QSerialPort::setPortName(portName);
+    QSerialPort::setBaudRate(baudRate);
+    QSerialPort::setDataBits(QSerialPort::Data8);
+    QSerialPort::setParity(QSerialPort::NoParity);
+    QSerialPort::setStopBits(QSerialPort::OneStop);
+    QSerialPort::setFlowControl(QSerialPort::NoFlowControl);
 
-    connect(&sPort, SIGNAL(readyRead()), this, SLOT(readData()));
-
-
+    connect(this, SIGNAL(readyRead()), this, SLOT(readData()));
 }
 
 
 
-void SerialCom::writeData(uint8_t cmd, uint8_t dataLength, const char *data)
+void SerialCom::writeData(serialCommands cmd, uint8_t dataLength, const char *data)
 {
     QByteArray syncByte(1, SYNC_BYTE);
     QByteArray cmdByte(1, cmd);
-    QByteArray lengthByte(1, dataLength);
+    QByteArray lengthByte(1, dataLength);    
 
-    qDebug() << "writeData-SerialPort";    
+    QSerialPort::write(syncByte);
+    QSerialPort::write(cmdByte);
+    QSerialPort::write(lengthByte);
+    QSerialPort::write(data, dataLength);
+}
 
-    sPort.write(syncByte);
-    sPort.write(cmdByte);
-    sPort.write(lengthByte);
-    sPort.write(data, dataLength);
+void SerialCom::writeCommand(serialCommands cmd)
+{
+    this->writeData(cmd, 0, "");
 }
 
 void SerialCom::open()
 {
 
-    qDebug() << "opening SerialPort...";
+    qDebug() << HEADER << "trying to open...";
 
 
     try
-    {
-        //if(sPort == Q_NULLPTR) throw (QString)"serialPort is not defined!";
-        if(sPort.isOpen())    throw (QString)"serialPort is already open!";
+    {        
+        if(QSerialPort::isOpen())    throw (QString)"Port is already open";
 
-        if(sPort.open(QIODevice::ReadWrite) == true)
+        if(QSerialPort::open(QIODevice::ReadWrite) == true)
         {
-            qDebug() << "serialPort opened successfully";
-            return;
+            qDebug() << HEADER << "opening succesfull";
         }
-
         else
         {
-            throw (QString)"unable to open SerialPort";
+            throw (QString)"unable to open";
         }
     }
 
@@ -76,27 +70,25 @@ void SerialCom::open()
 
 void SerialCom::close()
 {
+    qDebug() << HEADER << "trying to close...";
+
 
     try
     {
-        //if(sPort == Q_NULLPTR)
-        //{
-        //    throw (QString)"serialPort isn't initialized!";
-        //}
-        if(sPort.isOpen() == false)
+        if(this->isOpen() == false)
         {
-            throw (QString)"serialPort is already closed";
+            throw (QString)"Port is already closed";
         }
         else
         {
-            sPort.close();
+            QSerialPort::close();
 
-            qDebug() << "serialPort closed!";
+            qDebug() << HEADER << "closing succesfull";
         }
     }
     catch(QString msg)
     {
-        qDebug() << "[E] " << msg;
+        qDebug() << "[E] " << HEADER << msg;
     }
 }
 
@@ -106,7 +98,7 @@ void SerialCom::close()
 
 void SerialCom::readData()
 {
-    while(sPort.bytesAvailable() > 0)
+    while(QSerialPort::bytesAvailable() > 0)
     {
         stateMachine();
     }
@@ -122,7 +114,7 @@ void SerialCom::stateMachine()
     {
         case WAITFOR_SYNC:
                     uint8_t byte;
-                    sPort.read((char*)&byte, 1);
+                    QSerialPort::read((char*)&byte, 1);
 
                     if( byte == SYNC_BYTE )
                     {
@@ -132,12 +124,12 @@ void SerialCom::stateMachine()
             break;
 
         case WAITFOR_CMD:
-                sPort.read((char*)&received.cmd, 1);
+                QSerialPort::read((char*)&received.cmd, 1);
                 state = WAITFOR_LENGTH;
             break;
 
         case WAITFOR_LENGTH:
-                sPort.read((char*)&received.length, 1);
+                QSerialPort::read((char*)&received.length, 1);
                 state = WAITFOR_DATA;
             break;
 
@@ -145,7 +137,7 @@ void SerialCom::stateMachine()
 
                 if(iterator < received.length)
                 {
-                    sPort.read((char*)&received.data[iterator], 1);
+                    QSerialPort::read((char*)&received.data[iterator], 1);
                     iterator++;
                 }
 
@@ -154,9 +146,9 @@ void SerialCom::stateMachine()
                     state = WAITFOR_SYNC;
                     iterator = 0;
 
-                    emit dataReceived(received);
+                    qDebug() << HEADER << "incoming data complete";
 
-                    qDebug() << "Received data complete!";
+                    emit dataReceived(received);                    
                 }
 
             break;

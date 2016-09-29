@@ -12,6 +12,7 @@ class SerialThread : public loopThread
 
 private:
     SerialCom *comPort;
+    QSerialPort *testPort;
 
     void processLoop();
     void processStopping();
@@ -20,6 +21,7 @@ private:
 
 public:
     SerialThread(QString portName);
+    ~SerialThread();
 };
 
 #endif // SERIALTHREAD_H

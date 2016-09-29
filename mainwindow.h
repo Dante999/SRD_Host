@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QThread>
+#include <QTimer>
 #include "pcars/pcarsThread.h"
 #include "gameData.h"
 #include "serialcom/serialcom.h"
@@ -18,18 +19,21 @@ class MainWindow : public QMainWindow
 
 
 private:
+
+    int msSendIntervall;
+
     void refreshComPortList();
 
     bool connectedGame;
     bool connectedClient;
 
-
     loopThread *gameThread;
-    loopThread *comThread;
 
+    SerialCom *serialCom;
+    QTimer *timerSerialLoop;
 
     gameDataStruct gameData;
-    //SerialCom *comPort;
+
 
 
 public:
@@ -39,6 +43,8 @@ public:
 
 
 private slots:
+
+    void sendGameData();
 
     void on_pushButton_connectGame_clicked();    
 
