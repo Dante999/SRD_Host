@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>637</width>
-    <height>288</height>
+    <width>347</width>
+    <height>262</height>
    </rect>
   </property>
   <property name="cursor">
@@ -26,7 +26,7 @@
        </font>
       </property>
       <property name="text">
-       <string>SRD Host by Dante999</string>
+       <string>SRD Host</string>
       </property>
      </widget>
     </item>
@@ -38,19 +38,6 @@
      </widget>
     </item>
     <item>
-     <spacer name="verticalSpacer">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item>
      <widget class="QWidget" name="widget" native="true">
       <property name="autoFillBackground">
        <bool>false</bool>
@@ -59,20 +46,23 @@
        <item>
         <widget class="QGroupBox" name="groupBox_game">
          <property name="title">
-          <string>Verbindung mit Spiel</string>
+          <string>Einstellungen</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="2">
-           <widget class="QPushButton" name="pushButton_connectGame">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Verbinde</string>
+             <string>ComPort</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
+          <item row="1" column="1">
+           <widget class="QComboBox" name="comboBox_ComPorList"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QPushButton" name="pushButton_connect">
             <property name="text">
-             <string>Spiel</string>
+             <string>Verbinde</string>
             </property>
            </widget>
           </item>
@@ -88,57 +78,17 @@
             </item>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Status</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="label_gameStatus">
-            <property name="text">
-             <string>Nicht Verbunden</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="groupBox_client">
-         <property name="title">
-          <string>Verbindung mit Client</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Status</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="label_2">
+           <widget class="QLabel" name="label">
             <property name="text">
-             <string>ComPort</string>
+             <string>Spiel</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="comboBox_ComPorList"/>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLabel" name="label_connectStatus">
+          <item row="1" column="2">
+           <widget class="QToolButton" name="toolButton">
             <property name="text">
-             <string>Nicht Verbunden</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="pushButton_connectClient">
-            <property name="text">
-             <string>Verbinde</string>
+             <string>R</string>
             </property>
            </widget>
           </item>
@@ -155,7 +105,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>637</width>
+     <width>347</width>
      <height>21</height>
     </rect>
    </property>

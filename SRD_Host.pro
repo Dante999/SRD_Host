@@ -18,7 +18,8 @@ SOURCES += main.cpp\
         pcars/pcarsThread.cpp \
     serialcom/serialcom.cpp \
     loopthread.cpp \
-    serialcom/serialthread.cpp
+    game.cpp \
+    pcars/pcars.cpp
 
 HEADERS  += mainwindow.h \
     pcars/pcarssharedmemory.h \    
@@ -26,7 +27,8 @@ HEADERS  += mainwindow.h \
     gameData.h \
     serialcom/serialcom.h \
     loopthread.h \
-    serialcom/serialthread.h
+    game.h \
+    pcars/pcars.h
 
 FORMS    += mainwindow.ui
 

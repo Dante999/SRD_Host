@@ -4,11 +4,7 @@
 #include <QtSerialPort/QSerialPort>
 #include "stdint.h"
 
-
-
 #define SYNC_BYTE       0x00
-
-
 
 typedef struct
 {
@@ -32,34 +28,30 @@ class SerialCom : public QSerialPort
 
 private:
 
-    enum serialState
+    enum parseState
     {
         WAITFOR_SYNC,
         WAITFOR_CMD,
         WAITFOR_LENGTH,
         WAITFOR_DATA
-    } state;
+    };
 
+    parseState m_state;
+    serialPackage m_received;
 
-
-    serialPackage received;
-
-    void stateMachine();
+    void parseByte(char byte);
 
 public:
 
     SerialCom(QString portName, qint32 baudRate = QSerialPort::Baud19200);
-
     void writeData(serialCommands cmd, uint8_t dataLength, const char *data);
-    void writeCommand(serialCommands cmd);
-    void open();
-    void close();
 
 signals:
-    void dataReceived(serialPackage dataPackage);
+    void parsingComplete(serialPackage dataPackage);
 
 private slots:
-    void readData();
+    void parseReceivedData();
+
 };
 
 #endif // SERIALCOM_H

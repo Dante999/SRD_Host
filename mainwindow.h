@@ -9,6 +9,8 @@
 #include "serialcom/serialcom.h"
 
 
+#include "game.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -19,37 +21,29 @@ class MainWindow : public QMainWindow
 
 
 private:
-
     int msSendIntervall;
-
     void refreshComPortList();
 
-    bool connectedGame;
-    bool connectedClient;
 
     loopThread *gameThread;
 
-    SerialCom *serialCom;
+
     QTimer *timerSerialLoop;
 
-    gameDataStruct gameData;
-
-
+    QTimer m_timer;
+    SerialCom *m_serialCom;
+    Game *m_game;
+    gameDataStruct m_gameData;
 
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-
-
 private slots:
-
     void sendGameData();
+    void on_toolButton_clicked();
 
-    void on_pushButton_connectGame_clicked();    
-
-
-    void on_pushButton_connectClient_clicked();
+    void on_pushButton_connect_clicked();
 
 private:
     Ui::MainWindow *ui;

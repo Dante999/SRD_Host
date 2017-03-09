@@ -8,9 +8,6 @@
 
 SerialCom::SerialCom(QString portName, qint32 baudRate)
 {
-    qDebug() << HEADER << "creating: " << portName;
-    qDebug() << HEADER << "baudrate: " << baudRate;
-
     QSerialPort::setPortName(portName);
     QSerialPort::setBaudRate(baudRate);
     QSerialPort::setDataBits(QSerialPort::Data8);
@@ -18,9 +15,8 @@ SerialCom::SerialCom(QString portName, qint32 baudRate)
     QSerialPort::setStopBits(QSerialPort::OneStop);
     QSerialPort::setFlowControl(QSerialPort::NoFlowControl);
 
-    connect(this, SIGNAL(readyRead()), this, SLOT(readData()));
+    connect(this, SIGNAL(readyRead()), this, SLOT(parseReceivedData()));
 }
-
 
 
 void SerialCom::writeData(serialCommands cmd, uint8_t dataLength, const char *data)
@@ -35,120 +31,58 @@ void SerialCom::writeData(serialCommands cmd, uint8_t dataLength, const char *da
     QSerialPort::write(data, dataLength);
 }
 
-void SerialCom::writeCommand(serialCommands cmd)
+
+void SerialCom::parseReceivedData()
 {
-    this->writeData(cmd, 0, "");
-}
+    char byte = 0;
 
-void SerialCom::open()
-{
-
-    qDebug() << HEADER << "trying to open...";
-
-
-    try
-    {        
-        if(QSerialPort::isOpen())    throw (QString)"Port is already open";
-
-        if(QSerialPort::open(QIODevice::ReadWrite) == true)
-        {
-            qDebug() << HEADER << "opening succesfull";
-        }
-        else
-        {
-            throw (QString)"unable to open";
-        }
-    }
-
-    catch(QString msg)
-    {
-        qDebug() << "[E] " << msg;
-    }
-
-
-}
-
-void SerialCom::close()
-{
-    qDebug() << HEADER << "trying to close...";
-
-
-    try
-    {
-        if(this->isOpen() == false)
-        {
-            throw (QString)"Port is already closed";
-        }
-        else
-        {
-            QSerialPort::close();
-
-            qDebug() << HEADER << "closing succesfull";
-        }
-    }
-    catch(QString msg)
-    {
-        qDebug() << "[E] " << HEADER << msg;
-    }
-}
-
-
-
-
-
-void SerialCom::readData()
-{
     while(QSerialPort::bytesAvailable() > 0)
     {
-        stateMachine();
+        QSerialPort::read((char*)&byte, 1);
+        parseByte(byte);
     }
 }
 
 
-
-void SerialCom::stateMachine()
+void SerialCom::parseByte(char byte)
 {
     static uint8_t iterator = 0;
 
-    switch(state)
+    switch(m_state)
     {
         case WAITFOR_SYNC:
-                    uint8_t byte;
-                    QSerialPort::read((char*)&byte, 1);
 
-                    if( byte == SYNC_BYTE )
-                    {
-                        iterator = 0;
-                        state = WAITFOR_CMD;
-                    }
+            if( byte == SYNC_BYTE )
+            {
+                iterator = 0;
+                m_state = WAITFOR_CMD;
+            }
             break;
 
         case WAITFOR_CMD:
-                QSerialPort::read((char*)&received.cmd, 1);
-                state = WAITFOR_LENGTH;
+            m_received.cmd = byte;
+            m_state = WAITFOR_LENGTH;
             break;
 
         case WAITFOR_LENGTH:
-                QSerialPort::read((char*)&received.length, 1);
-                state = WAITFOR_DATA;
+                m_received.length = byte;
+                m_state = WAITFOR_DATA;
             break;
 
         case WAITFOR_DATA:
 
-                if(iterator < received.length)
+                if(iterator < m_received.length)
                 {
-                    QSerialPort::read((char*)&received.data[iterator], 1);
+                    m_received.data[iterator] = byte;
                     iterator++;
                 }
 
-                if(iterator >= received.length)
+                if(iterator >= m_received.length)
                 {
-                    state = WAITFOR_SYNC;
+                    m_state = WAITFOR_SYNC;
                     iterator = 0;
 
-                    qDebug() << HEADER << "incoming data complete";
-
-                    emit dataReceived(received);                    
+                    emit parsingComplete(m_received);
                 }
 
             break;
