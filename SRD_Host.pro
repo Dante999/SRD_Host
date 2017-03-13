@@ -15,7 +15,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \    
-        pcars/pcarsThread.cpp \
     serialcom/serialcom.cpp \
     loopthread.cpp \
     game.cpp \
@@ -23,7 +22,6 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     pcars/pcarssharedmemory.h \    
-    pcars/pcarsThread.h \
     gameData.h \
     serialcom/serialcom.h \
     loopthread.h \

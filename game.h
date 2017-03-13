@@ -15,7 +15,8 @@ class Game
 {
 public:
     Game();
-    virtual bool writeDataTo(gameDataStruct *data) = 0;
+    virtual  ~Game();
+    virtual bool writeDataTo(gameDataStruct *gameData) = 0;
     virtual bool isRunning() = 0;
 };
 

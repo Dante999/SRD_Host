@@ -4,6 +4,7 @@
 #include <QList>
 #include <QDebug>
 
+#include "pcars/pcars.h"
 
 
 #define CONNECT     "Verbinden"
@@ -16,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     msSendIntervall = 500;
+    m_game = Q_NULLPTR;
+    m_serialCom = Q_NULLPTR;
     ui->pushButton_connect->setText(CONNECT);
 
     refreshComPortList();
@@ -32,11 +35,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::sendGameData()
 {    
-    //m_serialCom->writeData(CMD_GAMEDATA, sizeof(m_gameData), (char*)&m_gameData);
-    static int i = 0;
-
-    qDebug() << "sending..." << i;
-    i++;
+    m_game->writeDataTo(&m_gameData);
+    m_serialCom->writeData(CMD_GAMEDATA, sizeof(m_gameData), (char*)&m_gameData);
 }
 
 
@@ -52,6 +52,50 @@ void MainWindow::refreshComPortList()
     }
 }
 
+void MainWindow::createGameObject()
+{
+    if(m_game == Q_NULLPTR)
+    {
+        m_game = new Pcars();
+    }
+}
+
+void MainWindow::deleteGameObject()
+{
+    if(m_game != Q_NULLPTR)
+    {
+        delete m_game;
+        m_game = Q_NULLPTR;
+    }
+}
+
+bool MainWindow::createSerialPort()
+{
+    if(m_serialCom == Q_NULLPTR)
+    {
+        QString portName = "";
+
+        portName = ui->comboBox_ComPorList->currentText();
+        m_serialCom = new SerialCom(portName);
+        m_serialCom->open(QIODevice::ReadWrite);
+
+        return m_serialCom->isOpen();
+    }
+
+    return false;
+
+}
+
+void MainWindow::deleteSerialPort()
+{
+    if(m_serialCom != Q_NULLPTR)
+    {
+        m_serialCom->close();
+        delete m_serialCom;
+        m_serialCom = Q_NULLPTR;
+    }
+}
+
 
 void MainWindow::on_toolButton_clicked()
 {
@@ -63,12 +107,23 @@ void MainWindow::on_pushButton_connect_clicked()
 {
     if(ui->pushButton_connect->text() == CONNECT)
     {
-        ui->pushButton_connect->setText(DISCONNECT);
-        m_timer.start(msSendIntervall);
+        if(!createSerialPort())
+        {
+            deleteSerialPort();
+        }
+        else
+        {
+            createGameObject();
+            ui->pushButton_connect->setText(DISCONNECT);
+            m_timer.start(msSendIntervall);
+        }
     }
     else
     {
-        ui->pushButton_connect->setText(CONNECT);
         m_timer.stop();
+
+        deleteGameObject();
+        deleteSerialPort();
+        ui->pushButton_connect->setText(CONNECT);
     }
 }
