@@ -3,14 +3,6 @@
 
 #include "gameData.h"
 
-enum gameStatus
-{
-    GAME_IS_OK,
-    GAME_NOT_RUNNING,
-    GAME_DATA_CANT_BE_READ
-};
-
-
 class Game
 {
 public:

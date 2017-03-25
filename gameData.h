@@ -58,16 +58,16 @@ typedef struct
     uint16_t tempOil;                       // [ UNITS = celsius ]  [ RANGE = 0 -> 65535 ]
     uint16_t tempWater;                     // [ UNITS = celsius ]  [ RANGE = 0 -> 65535 ]
 
-    uint8_t damageAero;                     // [ UNITS = percent ]     [ RANGE = 0 -> 100 ]
-    uint8_t damageEngine;                   // [ UNITS = percent ]     [ RANGE = 0 -> 100 ]
-    uint8_t damageBrake[eTYRE_MAX];         // [ UNITS = percent ]     [ RANGE = 0 -> 100 ]
-    uint8_t damageSuspension[eTYRE_MAX];    // [ UNITS = percent ]     [ RANGE = 0 -> 100 ]
-    uint8_t damageTyre[eTYRE_MAX];          // [ UNITS = percent ]     [ RANGE = 0 -> 100 ]
+    uint8_t damageAero;                     // [ UNITS = percent ]  [ RANGE = 0 -> 100 ]
+    uint8_t damageEngine;                   // [ UNITS = percent ]  [ RANGE = 0 -> 100 ]
+    uint8_t damageBrake[eTYRE_MAX];         // [ UNITS = percent ]  [ RANGE = 0 -> 100 ]
+    uint8_t damageSuspension[eTYRE_MAX];    // [ UNITS = percent ]  [ RANGE = 0 -> 100 ]
+    uint8_t damageTyre[eTYRE_MAX];          // [ UNITS = percent ]  [ RANGE = 0 -> 100 ]
 
     uint8_t raceFlagColour;                 // See (Type#5) Flag Colours
     uint8_t carFlags;                       // See (Type#9) Car Flags
 
-    uint8_t racePosition;
+    uint8_t racePosition;                   // [ UNITS = none ]     [ RANGE = 0 -> 255 ]
 
 
     float timeBestLap;

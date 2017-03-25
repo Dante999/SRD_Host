@@ -15,18 +15,16 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \    
-    serialcom/serialcom.cpp \
-    loopthread.cpp \
     game.cpp \
-    pcars/pcars.cpp
+    pcars/pcars.cpp \
+    serialcom.cpp
 
 HEADERS  += mainwindow.h \
     pcars/pcarssharedmemory.h \    
     gameData.h \
-    serialcom/serialcom.h \
-    loopthread.h \
     game.h \
-    pcars/pcars.h
+    pcars/pcars.h \
+    serialcom.h
 
 FORMS    += mainwindow.ui
 

@@ -1,13 +1,21 @@
 #include "serialcom.h"
-#include <QDebug>
 
 
-
-#define HEADER "serialPort - "
-
-
+/*******************************************************************************
+ * @brief   constructor
+ *
+ * configures the ComPort with settings like the portName, baudRate and parity.
+ *
+ * @param   portName    name of the ComPort (e.g., "COM1")
+ * @param   baudRate    Baudrate of the ComPort (e.g., 9600)
+ *
+ * @return  none
+ *
+*******************************************************************************/
 SerialCom::SerialCom(QString portName, qint32 baudRate)
 {
+    m_state = WAITFOR_SYNC;
+
     QSerialPort::setPortName(portName);
     QSerialPort::setBaudRate(baudRate);
     QSerialPort::setDataBits(QSerialPort::Data8);
@@ -15,10 +23,20 @@ SerialCom::SerialCom(QString portName, qint32 baudRate)
     QSerialPort::setStopBits(QSerialPort::OneStop);
     QSerialPort::setFlowControl(QSerialPort::NoFlowControl);
 
-    connect(this, SIGNAL(readyRead()), this, SLOT(parseReceivedData()));
+    connect(this, SIGNAL(readyRead()), this, SLOT(parseAllReceivedBytes()));
 }
 
 
+/*******************************************************************************
+ * @brief   writes formatted data to the ComPort
+ *
+ * @param   cmd         command-byte
+ * @param   dataLength  length-byte (number of bytes of the payload)
+ * @param   *data       payload
+ *
+ * @return  none
+ *
+*******************************************************************************/
 void SerialCom::writeData(serialCommands cmd, uint8_t dataLength, const char *data)
 {
     QByteArray syncByte(1, SYNC_BYTE);
@@ -32,19 +50,27 @@ void SerialCom::writeData(serialCommands cmd, uint8_t dataLength, const char *da
 }
 
 
-void SerialCom::parseReceivedData()
+/*******************************************************************************
+ * @brief   parses all received bytes from the input buffer
+ *
+ * @param   none
+ *
+ * @return  none
+ *
+*******************************************************************************/
+void SerialCom::parseAllReceivedBytes()
 {
     char byte = 0;
 
     while(QSerialPort::bytesAvailable() > 0)
     {
         QSerialPort::read((char*)&byte, 1);
-        parseByte(byte);
+        parseSingleByte(byte);
     }
 }
 
 
-void SerialCom::parseByte(char byte)
+void SerialCom::parseSingleByte(char byte)
 {
     static uint8_t iterator = 0;
 

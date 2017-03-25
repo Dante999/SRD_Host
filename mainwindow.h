@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QTimer>
 #include "gameData.h"
-#include "serialcom/serialcom.h"
+#include "serialcom.h"
 #include "game.h"
 
 namespace Ui {

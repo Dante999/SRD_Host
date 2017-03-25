@@ -39,7 +39,7 @@ private:
     parseState m_state;
     serialPackage m_received;
 
-    void parseByte(char byte);
+    void parseSingleByte(char byte);
 
 public:
 
@@ -50,7 +50,7 @@ signals:
     void parsingComplete(serialPackage dataPackage);
 
 private slots:
-    void parseReceivedData();
+    void parseAllReceivedBytes();
 
 };
 
